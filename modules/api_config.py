@@ -3,14 +3,23 @@ import streamlit as st
 def render_api_key_tab():
     st.subheader("API Key Configuration")
 
-    # Try to get API key from Streamlit secrets (for deployment)
-    # or from a local secrets.toml file (for local development)
-    # If not found, it will be None, and user needs to input it.
-    cloud_api_key = st.secrets.get("OPENAI_API_KEY", None)
+    # This function now assumes st.session_state.openai_api_key has been initialized
+    # (e.g., to "" in app.py if not already set).
+    # We attempt to populate it from st.secrets if it's currently empty
+    # or if st.secrets has a value and session_state doesn't.
 
-    # Initialize session state for API key if not already present
+    # Check if st.secrets has the key. This is safe even if secrets.toml doesn't exist.
+    secret_api_key_exists = "OPENAI_API_KEY" in st.secrets
+    secret_api_key_value = st.secrets["OPENAI_API_KEY"] if secret_api_key_exists else None
+
+    # Initialize or update session_state.openai_api_key from secrets if appropriate:
+    # 1. If session_state key isn't set at all (should be handled by app.py, but defensive)
+    # 2. If session_state key is set but empty, and secrets has a value.
     if "openai_api_key" not in st.session_state:
-        st.session_state.openai_api_key = cloud_api_key if cloud_api_key else ""
+        st.session_state.openai_api_key = secret_api_key_value if secret_api_key_value else ""
+    elif not st.session_state.openai_api_key and secret_api_key_value:
+        # If current API key in session is empty, but secrets has one, use the one from secrets.
+        st.session_state.openai_api_key = secret_api_key_value
 
     # Use a text input for the API key
     # We use session state to persist the key across reruns or tab switches
