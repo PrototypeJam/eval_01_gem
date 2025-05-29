@@ -1,3 +1,8 @@
+# uv venv
+# source .venv/bin/activate
+# uv pip install -r requirements.txt
+# streamlit run app.py
+
 import streamlit as st
 
 from modules.api_config import render_api_key_tab
