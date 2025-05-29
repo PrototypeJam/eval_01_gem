@@ -1,4 +1,4 @@
-gem
+template starter app - gem
 
 # Prompt
 
