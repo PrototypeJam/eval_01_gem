@@ -21,10 +21,11 @@ st.caption(
 )
 
 # --- Initialize Session State ---
-# We do this at the top level if certain states are shared or need to be checked globally
-# Individual modules also manage their own session states as needed.
+# Initialize openai_api_key in session state if it's not already there.
+# We default to an empty string. The 'API Key' tab (api_config.py) will handle
+# attempting to load it from st.secrets or prompting the user.
 if "openai_api_key" not in st.session_state:
-    st.session_state.openai_api_key = st.secrets.get("OPENAI_API_KEY", "")
+    st.session_state.openai_api_key = ""
 
 # --- Tab Creation ---
 tab_titles = [
